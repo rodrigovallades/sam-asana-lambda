@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'sam-asana-lambda
+
+  Get account info from Asana
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Outputs:
+  AsanaWhoamiApi:
+    Description: API Gateway endpoint URL for Prod stage for Asana Whoami function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/whoami/
+  AsanaWhoamiFunction:
+    Description: Asana Whoami Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - AsanaWhoamiFunction
+      - Arn
+  AsanaWhoamiFunctionIamRole:
+    Description: Implicit IAM Role created for Asana Whoami function
+    Value:
+      Fn::GetAtt:
+      - AsanaWhoamiFunctionRole
+      - Arn
+Resources:
+  AsanaWhoamiFunction:
+    Properties:
+      CodeUri: s3://asana-lambda/8c2f6e052b7be20d0b587fd232df2551
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        AsanaWhoami:
+          Properties:
+            Method: get
+            Path: /whoami
+          Type: Api
+      Handler: app.lambdaHandler
+      Runtime: nodejs8.10
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
